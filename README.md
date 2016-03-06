@@ -1,18 +1,15 @@
 # Company API
-================
+
 A number of basic RESTful APIs for performing simple CRUD operations on companies.
 
 ## DB setup
-============
+
 Run the scripts from *db/script.sql* into postgres DB.
 
-## Build & Run
-===============	
-	gradle build
-	gradle run 
+## Build & Run 
 	
 ## Using cURL
-===============
+
 ### 1. Create new company
 
 	curl -H "Content-Type: application/json" -X POST -d '{"name": "comp1", "address": "addr1", "city": "city1", "country": "country1", "phone": "phone1", "email": "email1", "beneficiaryOwners": [{"name": "name5"}, {"name": "name6"}]}' http://<hostname>:<port>/companies
