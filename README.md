@@ -1,6 +1,18 @@
 # Company API
+================
 
 A number of basic RESTful APIs for performing simple CRUD operations on companies.
+
+## DB setup
+============
+
+Run the scripts from *db/script.sql* into postgres DB.
+
+## Build & Run
+===============
+	
+	gradle build
+	gradle run 
 	
 ## Using cURL
 
