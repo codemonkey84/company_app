@@ -5,6 +5,9 @@ package com.codemonkey84.company.domain;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 /**
  * @author lenovo
  * POJO/VO/DTO class for company beneficiary owner
@@ -39,8 +42,19 @@ public class BeneficiaryOwner implements Validable {
 		this.name = name;
 	}
 	@Override
+	@JsonIgnore
 	public boolean isValid() {
 		return true;
 	}	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("BeneficiaryOwner [id=").append(id).append(", name=")
+				.append(name).append("]");
+		return builder.toString();
+	}
 	
 }

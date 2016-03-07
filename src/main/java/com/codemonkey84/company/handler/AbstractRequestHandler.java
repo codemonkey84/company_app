@@ -42,15 +42,13 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 			if (StringUtils.isNotEmpty(request.body())) {
 				value = objectMapper.readValue(request.body(), valueClass);
 			}
-			Map<String, String> urlParams = request.params();			
+			Map<String, String> urlParams = request.params();
 			Answer answer = process(value, urlParams);
 			response.status(answer.getCode());
-			response.type("application/json");
 			response.body(answer.getBody());
 			return answer.getBody();
 		} catch (JsonParseException jpe) {
 			response.status(400);
-			response.type("application/json");
 			response.body(jpe.getLocalizedMessage());
 			return response.body();
 		}
@@ -86,6 +84,7 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 	public static void main(String[] args) {
 
 		CompanyService companyService = ServiceFactory.createCompanyService();
+
 		/**
 		 * Create new company POST /companies.json
 		 */
@@ -111,6 +110,45 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 		 */
 		Spark.post("/companies/:id/owners", new CompanyAddOwnersHandler(
 				companyService));
+
+		/**
+		 * Enable CORS for preflight request
+		 */
+		Spark.options(
+				"/*",
+				(request, response) -> {
+
+					String accessControlRequestHeaders = request
+							.headers("Access-Control-Request-Headers");
+					if (accessControlRequestHeaders != null) {
+						response.header("Access-Control-Allow-Headers",
+								accessControlRequestHeaders);
+					}
+
+					String accessControlRequestMethod = request
+							.headers("Access-Control-Request-Method");
+					if (accessControlRequestMethod != null) {
+						response.header("Access-Control-Allow-Methods",
+								accessControlRequestMethod);
+					}
+
+					return "OK";
+				});
+
+		/**
+		 * Enable CORS - allowing all origins before any request
+		 */
+		Spark.before((request, response) -> {
+			response.header("Access-Control-Allow-Origin", "*");
+		});
+		
+		/**
+		 * Filter that intercepts each response and set the content type as
+		 * application/json
+		 */
+		Spark.after((request, response) -> {
+			response.type("application/json");
+		});
 
 	}
 

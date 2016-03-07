@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import spark.utils.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author lenovo POJO/VO/DTO class for company
  */
@@ -163,6 +165,7 @@ public class Company implements Validable {
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isValid() {
 		return StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(city)
 				&& StringUtils.isNotEmpty(address)
