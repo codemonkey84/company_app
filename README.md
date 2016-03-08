@@ -29,4 +29,4 @@ Run the scripts from *db/script.sql* into postgres DB.
 	
 ### 5. Add beneficial owner(s) of the company
 
-	curl -H "Content-Type: application/json" -X PUT -d '{"beneficiaryOwners": [{"name": "name5"}, {"name": "name6"}]}' http://<hostname>:<port>/companies/:id/owners
+	curl -H "Content-Type: application/json" -X POST -d '{"beneficiaryOwners": [{"name": "name5"}, {"name": "name6"}]}' http://<hostname>:<port>/companies/:id/owners

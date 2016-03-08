@@ -1,6 +1,6 @@
 CREATE USER company_owner WITH PASSWORD 'sparkforthewin';
 CREATE DATABASE company;
-/* connect company */
+\connect company
 GRANT ALL PRIVILEGES ON DATABASE company TO company_owner;
 
 CREATE TABLE companies (
@@ -15,7 +15,7 @@ CREATE TABLE companies (
 
 CREATE TABLE beneficial_owners (
     id uuid primary key,
-    company_uuid uuid references companies(post_uuid),
+    company_id uuid references companies(id),
     name text
 );
 

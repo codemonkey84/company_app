@@ -24,3 +24,6 @@ apply plugin: 'eclipse'
 
 apply plugin: 'application'
 mainClassName = 'com.codemonkey84.company.handler.AbstractRequestHandler'
+task stage {
+  dependsOn build
+}

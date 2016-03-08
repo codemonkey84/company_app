@@ -21,8 +21,8 @@ public class DaoFactory {
 
 	public static CompanyDao createCompanyDao() {
 		if (sql2o == null) {
-			sql2o = new Sql2o("jdbc:postgresql://localhost:5432/company",
-					"company_owner", "sparkforthewin", new PostgresQuirks() {
+			sql2o = new Sql2o(System.getenv("DB_URL"), System.getenv("DB_USERNAME"), System.getenv("DB_PASSWORD"),
+					new PostgresQuirks() {
 						{
 							converters.put(UUID.class, new UUIDConverter());
 						}
