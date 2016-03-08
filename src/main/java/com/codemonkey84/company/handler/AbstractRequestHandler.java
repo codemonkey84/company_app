@@ -25,8 +25,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author lenovo
  *
  */
-public abstract class AbstractRequestHandler<V extends Validable> implements
-		RequestHandler<V>, Route {
+public abstract class AbstractRequestHandler<V extends Validable> implements RequestHandler<V>, Route {
 
 	private Class<V> valueClass;
 
@@ -71,8 +70,7 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 			mapper.writeValue(sw, data);
 			return sw.toString();
 		} catch (IOException e) {
-			throw new RuntimeException("IOException from a StringWriter: "
-					+ e.getLocalizedMessage());
+			throw new RuntimeException("IOException from a StringWriter: " + e.getLocalizedMessage());
 		}
 	}
 
@@ -83,6 +81,8 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 	 */
 	public static void main(String[] args) {
 
+		// Initializing the port to listen
+		Spark.port(getPortFromEnv());
 		CompanyService companyService = ServiceFactory.createCompanyService();
 
 		/**
@@ -108,32 +108,25 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 		/**
 		 * Add beneficial owner(s) of the company POST /companies/1/owners.json
 		 */
-		Spark.post("/companies/:id/owners", new CompanyAddOwnersHandler(
-				companyService));
+		Spark.post("/companies/:id/owners", new CompanyAddOwnersHandler(companyService));
 
 		/**
 		 * Enable CORS for preflight request
 		 */
-		Spark.options(
-				"/*",
-				(request, response) -> {
+		Spark.options("/*", (request, response) -> {
 
-					String accessControlRequestHeaders = request
-							.headers("Access-Control-Request-Headers");
-					if (accessControlRequestHeaders != null) {
-						response.header("Access-Control-Allow-Headers",
-								accessControlRequestHeaders);
-					}
+			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+			if (accessControlRequestHeaders != null) {
+				response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+			}
 
-					String accessControlRequestMethod = request
-							.headers("Access-Control-Request-Method");
-					if (accessControlRequestMethod != null) {
-						response.header("Access-Control-Allow-Methods",
-								accessControlRequestMethod);
-					}
+			String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+			if (accessControlRequestMethod != null) {
+				response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+			}
 
-					return "OK";
-				});
+			return "OK";
+		});
 
 		/**
 		 * Enable CORS - allowing all origins before any request
@@ -141,7 +134,7 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 		Spark.before((request, response) -> {
 			response.header("Access-Control-Allow-Origin", "*");
 		});
-		
+
 		/**
 		 * Filter that intercepts each response and set the content type as
 		 * application/json
@@ -150,6 +143,14 @@ public abstract class AbstractRequestHandler<V extends Validable> implements
 			response.type("application/json");
 		});
 
+	}
+
+	private static int getPortFromEnv() {
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		if (processBuilder.environment().get("PORT") != null) {
+			return Integer.parseInt(processBuilder.environment().get("PORT"));
+		}
+		return 4567;
 	}
 
 }
