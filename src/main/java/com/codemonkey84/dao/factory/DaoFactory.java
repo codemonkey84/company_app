@@ -3,6 +3,8 @@
  */
 package com.codemonkey84.dao.factory;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.sql2o.Sql2o;
@@ -21,12 +23,21 @@ public class DaoFactory {
 
 	public static CompanyDao createCompanyDao() {
 		if (sql2o == null) {
-			sql2o = new Sql2o(System.getenv("DB_URL"), System.getenv("DB_USERNAME"), System.getenv("DB_PASSWORD"),
-					new PostgresQuirks() {
-						{
-							converters.put(UUID.class, new UUIDConverter());
-						}
-					});
+			URI dbUri;
+			try {
+				dbUri = new URI(System.getenv("HEROKU_POSTGRESQL_PUCE_URL"));
+				String username = dbUri.getUserInfo().split(":")[0];
+				String password = dbUri.getUserInfo().split(":")[1];
+				String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+				sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks() {
+					{
+						converters.put(UUID.class, new UUIDConverter());
+					}
+				});
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return new CompanyDaoImpl(sql2o);
 	}
